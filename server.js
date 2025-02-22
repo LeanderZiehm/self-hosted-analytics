@@ -1,12 +1,30 @@
-const express = require("express");
-const fs = require("fs");
-const useragent = require("useragent");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
+import { MongoClient } from "mongodb";
+import { config } from "dotenv";
+import useragent from "useragent";
+
+config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+const client = new MongoClient(process.env.MONGODB_URI);
 
 app.use(cors());
 app.use(express.json());
+
+// Connect to MongoDB
+async function connectDB() {
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB ✅");
+    } catch (err) {
+        console.error("MongoDB connection error ❌", err);
+        process.exit(1);
+    }
+}
+
+connectDB();
 
 // Serve the tracking script
 app.get("/track.js", (req, res) => {
@@ -28,7 +46,10 @@ app.get("/track.js", (req, res) => {
 });
 
 // Track data
-app.post("/track", (req, res) => {
+app.post("/track", async (req, res) => {
+    const db = client.db("analyticsDB"); // Change to your DB name
+    const collection = db.collection("tracking");
+
     const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     const agent = useragent.parse(req.body.userAgent);
 
@@ -43,15 +64,21 @@ app.post("/track", (req, res) => {
         timezone: req.body.timezone
     };
 
-    console.log(logData);
-
-    fs.appendFileSync("logs.json", JSON.stringify(logData) + ",\n");
-
-    res.sendStatus(200);
+    try {
+        await collection.insertOne(logData);
+        console.log("Tracking data saved ✅", logData);
+        res.sendStatus(200);
+    } catch (error) {
+        console.error("Error saving tracking data ❌", error);
+        res.sendStatus(500);
+    }
 });
 
 // Report issue
-app.post("/report", (req, res) => {
+app.post("/report", async (req, res) => {
+    const db = client.db("analyticsDB"); // Change to your DB name
+    const collection = db.collection("reports");
+
     const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
     const reportData = {
@@ -64,12 +91,15 @@ app.post("/report", (req, res) => {
         timezone: req.body.timezone
     };
 
-    console.log("Error Report:", reportData);
-
-    fs.appendFileSync("reports.json", JSON.stringify(reportData) + ",\n");
-
-    res.sendStatus(200);
+    try {
+        await collection.insertOne(reportData);
+        console.log("Report saved ✅", reportData);
+        res.sendStatus(200);
+    } catch (error) {
+        console.error("Error saving report ❌", error);
+        res.sendStatus(500);
+    }
 });
 
 // Export for Vercel
-module.exports = app;
+export default app;
