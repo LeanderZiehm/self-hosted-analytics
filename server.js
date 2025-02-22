@@ -26,12 +26,14 @@ async function connectDB() {
 
 connectDB();
 
-// Serve the tracking script
 app.get("/track.js", (req, res) => {
     res.setHeader("Content-Type", "application/javascript");
     res.send(`
         (function() {
-            fetch('/track', {
+            var scriptSrc = document.currentScript ? document.currentScript.src : '';
+            var baseUrl = scriptSrc.split('/track.js')[0]; // Extract the base URL
+            
+            fetch(baseUrl + '/track', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -44,6 +46,26 @@ app.get("/track.js", (req, res) => {
         })();
     `);
 });
+
+
+// Serve the tracking script
+// app.get("/track.js", (req, res) => {
+//     res.setHeader("Content-Type", "application/javascript");
+//     res.send(`
+//         (function() {
+//             fetch('/track', {
+//                 method: 'POST',
+//                 headers: { 'Content-Type': 'application/json' },
+//                 body: JSON.stringify({
+//                     referrer: document.referrer,
+//                     userAgent: navigator.userAgent,
+//                     screenSize: screen.width + 'x' + screen.height,
+//                     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+//                 })
+//             });
+//         })();
+//     `);
+// });
 
 // Track data
 app.post("/track", async (req, res) => {
