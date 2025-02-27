@@ -1,0 +1,5 @@
+
+<script src="https://self-hosted-analytics.vercel.app/track.js"></script>
+
+
+<img src="https://self-hosted-analytics.vercel.app/email-track?email=kinnari" width="1" height="1" style="display:none;" />

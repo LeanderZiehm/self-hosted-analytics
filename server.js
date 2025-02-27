@@ -12,11 +12,17 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/track.js", (req, res) => {
+
+
+    
+    const theURLofNODEJSserver = JSON.stringify(req.protocol + '://' + req.get('host'));
+
     res.setHeader("Content-Type", "application/javascript");
     res.send(`
         (function() {
             var scriptSrc = document.currentScript ? document.currentScript.src : '';
-            var baseUrl = "https://self-hosted-analytics.vercel.app";
+            var baseUrl = ${theURLofNODEJSserver};
+            console.log("tracking");
             
             fetch(baseUrl + '/track', {
                 method: 'POST',
