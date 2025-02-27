@@ -24,6 +24,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongodb": "^6.13.1",
-    "useragent": "^2.3.0"
+    "useragent": "^2.3.0",
+     "yallist": "^4.0.0"
   }
 }

@@ -47,27 +47,6 @@ app.get("/track.js", (req, res) => {
     `);
 });
 
-
-// Serve the tracking script
-// app.get("/track.js", (req, res) => {
-//     res.setHeader("Content-Type", "application/javascript");
-//     res.send(`
-//         (function() {
-//             fetch('/track', {
-//                 method: 'POST',
-//                 headers: { 'Content-Type': 'application/json' },
-//                 body: JSON.stringify({
-//                     referrer: document.referrer,
-//                     userAgent: navigator.userAgent,
-//                     screenSize: screen.width + 'x' + screen.height,
-//                     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-//                 })
-//             });
-//         })();
-//     `);
-// });
-
-// Track data
 app.post("/track", async (req, res) => {
     const db = client.db("analyticsDB"); // Change to your DB name
     const collection = db.collection("tracking");
