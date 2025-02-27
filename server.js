@@ -21,7 +21,7 @@ app.get("/track.js", (req, res) => {
     res.send(`
         (function() {
             var scriptSrc = document.currentScript ? document.currentScript.src : '';
-            var baseUrl = ${theURLofNODEJSserver};
+            var baseUrl = "${theURLofNODEJSserver}";
             console.log("tracking");
             
             fetch(baseUrl + '/track', {
