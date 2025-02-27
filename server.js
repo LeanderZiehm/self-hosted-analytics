@@ -15,7 +15,7 @@ app.get("/track.js", (req, res) => {
 
 
     
-    const theURLofNODEJSserver = JSON.stringify(req.protocol + '://' + req.get('host'));
+    const theURLofNODEJSserver = 'https://' + req.get('host');
 
     res.setHeader("Content-Type", "application/javascript");
     res.send(`
