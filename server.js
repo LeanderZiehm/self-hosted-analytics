@@ -48,8 +48,8 @@ app.post("/track", async (req, res) => {
     const logData = {
         url: req.body.url, // Store the visited URL
         ip: ip,
-        getUTCMilliseconds: new Date().getUTCMilliseconds(),
-        time: new Date().toISOString(),
+        time: new Date().getTime(),
+        dateString: new Date().toISOString(),
         userAgent: req.body.userAgent,
         browser: agent.family,
         os: agent.os.toString(),
