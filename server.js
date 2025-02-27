@@ -31,8 +31,8 @@ app.get("/track.js", (req, res) => {
     res.send(`
         (function() {
             var scriptSrc = document.currentScript ? document.currentScript.src : '';
-            var baseUrl = scriptSrc.split('/track.js')[0]; // Extract the base URL
-            console.log(baseUrl)
+            var baseUrl = "https://self-hosted-analytics.vercel.app/" //scriptSrc.split('/track.js')[0]; // Extract the base URL
+            
             
             fetch(baseUrl + '/track', {
                 method: 'POST',
