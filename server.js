@@ -12,11 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/track.js", (req, res) => {
-    console.log(req.get('host'))
     const theURLofNODEJSserver = "https://" + req.get('host');
-    console.log("theURLofNODEJSserver", theURLofNODEJSserver);
-
-
     res.setHeader("Content-Type", "application/javascript");
     res.send(`
         (function() {
@@ -50,10 +46,11 @@ app.post("/track", async (req, res) => {
     const agent = useragent.parse(req.body.userAgent);
 
     const logData = {
-        ip,
+        url: req.body.url, // Store the visited URL
+        ip: ip,
+        getUTCMilliseconds: new Date().getUTCMilliseconds(),
         time: new Date().toISOString(),
         userAgent: req.body.userAgent,
-        url: req.body.url, // Store the visited URL
         browser: agent.family,
         os: agent.os.toString(),
         device: agent.device.toString(),
