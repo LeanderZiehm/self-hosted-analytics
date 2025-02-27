@@ -8,23 +8,23 @@ config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const client = new MongoClient(process.env.MONGO_URI);
+
 
 app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-async function connectDB() {
-    try {
-        await client.connect();
-        console.log("Connected to MongoDB ✅");
-    } catch (err) {
-        console.error("MongoDB connection error ❌", err);
-        process.exit(1);
-    }
-}
+// async function connectDB() {
+//     try {
+//         await client.connect();
+//         console.log("Connected to MongoDB ✅");
+//     } catch (err) {
+//         console.error("MongoDB connection error ❌", err);
+//         process.exit(1);
+//     }
+// }
 
-connectDB();
+// connectDB();
 
 app.get("/track.js", (req, res) => {
     res.setHeader("Content-Type", "application/javascript");
@@ -48,6 +48,7 @@ app.get("/track.js", (req, res) => {
 });
 
 app.post("/track", async (req, res) => {
+    const client = new MongoClient(process.env.MONGO_URI);
     const db = client.db("analyticsDB"); // Change to your DB name
     const collection = db.collection("tracking");
 
@@ -72,35 +73,9 @@ app.post("/track", async (req, res) => {
     } catch (error) {
         console.error("Error saving tracking data ❌", error);
         res.sendStatus(500);
+    } finally {
+        await client.close();
     }
 });
 
-// Report issue
-app.post("/report", async (req, res) => {
-    const db = client.db("analyticsDB"); // Change to your DB name
-    const collection = db.collection("reports");
-
-    const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-
-    const reportData = {
-        ip,
-        time: new Date().toISOString(),
-        message: req.body.message || "No message provided",
-        userAgent: req.body.userAgent,
-        screenSize: req.body.screenSize,
-        referrer: req.body.referrer,
-        timezone: req.body.timezone
-    };
-
-    try {
-        await collection.insertOne(reportData);
-        console.log("Report saved ✅", reportData);
-        res.sendStatus(200);
-    } catch (error) {
-        console.error("Error saving report ❌", error);
-        res.sendStatus(500);
-    }
-});
-
-// Export for Vercel
 export default app;
