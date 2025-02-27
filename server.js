@@ -12,12 +12,10 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/track.js", (req, res) => {
-
-
- 
+    console.log(req.get('host'))
     const theURLofNODEJSserver = "https://" + req.get('host');
     console.log("theURLofNODEJSserver", theURLofNODEJSserver);
-    
+
 
     res.setHeader("Content-Type", "application/javascript");
     res.send(`
