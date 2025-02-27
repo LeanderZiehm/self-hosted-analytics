@@ -19,28 +19,15 @@ app.options('*', (req, res) => {
     res.sendStatus(200);
 });
 
-
 app.use(express.json());
 
-// Connect to MongoDB
-// async function connectDB() {
-//     try {
-//         await client.connect();
-//         console.log("Connected to MongoDB ✅");
-//     } catch (err) {
-//         console.error("MongoDB connection error ❌", err);
-//         process.exit(1);
-//     }
-// }
-
-// connectDB();
 
 app.get("/track.js", (req, res) => {
     res.setHeader("Content-Type", "application/javascript");
     res.send(`
         (function() {
             var scriptSrc = document.currentScript ? document.currentScript.src : '';
-            var baseUrl = "https://self-hosted-analytics.vercel.app/";
+            var baseUrl = "https://self-hosted-analytics.vercel.app";
             
             fetch(baseUrl + '/track', {
                 method: 'POST',
