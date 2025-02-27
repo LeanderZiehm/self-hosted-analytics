@@ -8,7 +8,7 @@ config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const client = new MongoClient(process.env.MONGODB_URI);
+const client = new MongoClient(process.env.MONGO_URI);
 
 app.use(cors());
 app.use(express.json());
@@ -31,8 +31,7 @@ app.get("/track.js", (req, res) => {
     res.send(`
         (function() {
             var scriptSrc = document.currentScript ? document.currentScript.src : '';
-            var baseUrl = "https://self-hosted-analytics.vercel.app/" //scriptSrc.split('/track.js')[0]; // Extract the base URL
-            
+            var baseUrl = "https://self-hosted-analytics.vercel.app/";
             
             fetch(baseUrl + '/track', {
                 method: 'POST',
