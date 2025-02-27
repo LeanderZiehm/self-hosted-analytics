@@ -32,6 +32,7 @@ app.get("/track.js", (req, res) => {
         (function() {
             var scriptSrc = document.currentScript ? document.currentScript.src : '';
             var baseUrl = scriptSrc.split('/track.js')[0]; // Extract the base URL
+            console.log(baseUrl)
             
             fetch(baseUrl + '/track', {
                 method: 'POST',
