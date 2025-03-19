@@ -73,4 +73,43 @@ app.post("/track", async (req, res) => {
     }
 });
 
+app.get("/email-track", async (req, res) => {
+    const client = new MongoClient(process.env.MONGO_URI);
+    const db = client.db("analyticsDB");
+    const collection = db.collection("email_tracking");
+
+    const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    const userAgent = req.headers["user-agent"];
+    const agent = useragent.parse(userAgent);
+
+    const logData = {
+        email: req.query.email || "unknown", // Capture email if provided
+        ip,
+        time: new Date().toISOString(),
+        browser: agent.family,
+        os: agent.os.toString(),
+        device: agent.device.toString(),
+        referrer: req.headers["referer"] || "unknown"
+    };
+
+    try {
+        await collection.insertOne(logData);
+        console.log("Email tracking data saved ✅", logData);
+    } catch (error) {
+        console.error("Error saving email tracking data ❌", error);
+    } finally {
+        await client.close();
+    }
+
+    // Send a 1x1 transparent pixel image
+    const pixel = Buffer.from(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/eqQbQAAAABJRU5ErkJggg==",
+        "base64"
+    );
+    res.setHeader("Content-Type", "image/png");
+    res.setHeader("Content-Length", pixel.length);
+    res.end(pixel);
+});
+
+
 export default app;
