@@ -82,4 +82,22 @@ app.post("/track", async (req, res) => {
     }
 });
 
+
+// Fetch analytics data
+app.get("/analytics", async (req, res) => {
+    const client = new MongoClient(MONGO_URI);
+    const db = client.db("analyticsDB");
+    const collection = db.collection("tracking");
+
+    try {
+        const analyticsData = await collection.find({}).toArray();
+        res.json(analyticsData);
+    } catch (error) {
+        console.error("Error fetching analytics data ❌", error);
+        res.sendStatus(500);
+    } finally {
+        await client.close();
+    }
+});
+
 export default app;
