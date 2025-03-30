@@ -15,10 +15,8 @@ const MONGO_URI = process.env.MONGO_URI;
 
 
 app.get("/", (req, res) => {
-
     const theURLofNODEJSserver = "https://" + req.get('host');
-
-    res.send(`you have to add  <script src="${theURLofNODEJSserver}/track.js"></script>  to your page`);
+    res.send(`you have to add  < script src="${theURLofNODEJSserver}/track.js"></script>  to your page`);
 }
 );
 
