@@ -13,6 +13,15 @@ app.use(express.json());
 
 const MONGO_URI = process.env.MONGO_URI;
 
+
+app.get("/", (req, res) => {
+
+    const theURLofNODEJSserver = "https://" + req.get('host');
+
+    res.send(`you have to add  <script src="${theURLofNODEJSserver}/track.js"></script>  to your page`);
+}
+);
+
 app.get("/track.js", (req, res) => {
     const theURLofNODEJSserver = "https://" + req.get('host');
     res.setHeader("Content-Type", "application/javascript");
