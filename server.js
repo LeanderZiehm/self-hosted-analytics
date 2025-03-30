@@ -11,6 +11,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const MONGO_URI = process.env.MONGO_URI;
+
 app.get("/track.js", (req, res) => {
     const theURLofNODEJSserver = "https://" + req.get('host');
     res.setHeader("Content-Type", "application/javascript");
@@ -38,7 +40,7 @@ app.get("/track.js", (req, res) => {
 });
 
 app.post("/track", async (req, res) => {
-    const client = new MongoClient(process.env.MONGO_URI);
+    const client = new MongoClient(MONGO_URI);
     const db = client.db("analyticsDB"); // Change to your DB name
     const collection = db.collection("tracking");
 
